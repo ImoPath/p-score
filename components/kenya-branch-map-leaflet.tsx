@@ -4,18 +4,16 @@ import React, { useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { MapPin, Users, AlertTriangle } from "lucide-react"
 import dynamic from "next/dynamic"
+import { Icon } from "leaflet"
 
 // Dynamically import react-leaflet components to avoid SSR issues
 const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false })
 const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false })
 const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false })
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false })
-const useMap = dynamic(() => import("react-leaflet").then((mod) => mod.useMap), { ssr: false })
 
-// Import Leaflet CSS
-if (typeof window !== "undefined") {
-  import("leaflet/dist/leaflet.css")
-}
+// Note: Leaflet CSS should be imported in globals.css or _app.tsx
+// import "leaflet/dist/leaflet.css"
 
 // Kenya branch locations with risk data
 const branches = [
@@ -94,21 +92,28 @@ const lowRiskIcon = createCustomIcon("#1b87c9")
 const highRiskIcon = createCustomIcon("#ec8425")
 
 // Component to fit map bounds to Kenya
-function FitBounds() {
-  const map = useMap()
-  
-  React.useEffect(() => {
-    // Kenya bounds: [south, west, north, east]
-    const kenyaBounds = [
-      [-4.7, 33.9], // Southwest
-      [5.5, 41.9]   // Northeast
-    ] as [[number, number], [number, number]]
+const FitBounds = dynamic(() => 
+  import("react-leaflet").then((mod) => {
+    const { useMap } = mod
     
-    map.fitBounds(kenyaBounds, { padding: [20, 20] })
-  }, [map])
-  
-  return null
-}
+    return function FitBoundsComponent() {
+      const map = useMap()
+      
+      React.useEffect(() => {
+        // Kenya bounds: [south, west, north, east]
+        const kenyaBounds = [
+          [-4.7, 33.9], // Southwest
+          [5.5, 41.9]   // Northeast
+        ] as [[number, number], [number, number]]
+        
+        map.fitBounds(kenyaBounds, { padding: [20, 20] })
+      }, [map])
+      
+      return null
+    }
+  }), 
+  { ssr: false }
+)
 
 export default function KenyaBranchMapLeaflet() {
   return (
