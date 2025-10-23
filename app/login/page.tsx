@@ -36,7 +36,7 @@ export default function LoginPage() {
             <Shield className="h-12 w-12" />
             <h1 className="text-4xl font-bold">P-Score</h1>
           </div>
-          <h2 className="text-5xl font-bold mb-6 text-balance">Advanced Credit Scoring & Risk Monitoring</h2>
+          <h2 className="text-5xl font-bold mb-6 text-balance">Advanced Credit Scoring & Risk Monitoring.</h2>
           <p className="text-xl text-primary-foreground/90 max-w-xl text-pretty">
             Empowering financial institutions with real-time credit assessment, comprehensive risk analysis, and
             intelligent monitoring systems.
